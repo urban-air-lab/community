@@ -1,0 +1,51 @@
+services:
+  wordpress:
+    image: wordpress:php8.5-apache
+    restart: always
+    container_name: wordpress
+    ports:
+      - "80:80"
+    depends_on:
+      wordpress-db:
+        condition: service_healthy
+    environment:
+      WORDPRESS_DB_HOST: wordpress-db
+      WORDPRESS_DB_USER: ${MYSQL_USER}
+      WORDPRESS_DB_PASSWORD: ${MYSQL_PASSWORD}
+      WORDPRESS_DB_NAME: ${MYSQL_DATABASE}
+    volumes:
+      - wordpress_data:/var/www/html
+    networks:
+      - proxy
+      - default
+
+  wordpress-db:
+    image: mysql:8.0
+    restart: always
+    container_name: wordpress-db
+    ports:
+        - "3306:3306"
+    command: --log-bin-trust-function-creators=1
+    environment:
+        - MYSQL_DATABASE=${MYSQL_DATABASE}
+        - MYSQL_USER=${MYSQL_USER}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+        - dbdata:/var/lib/mysql
+    networks:
+      - default
+    healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+        interval: 10s
+        timeout: 5s
+        retries: 10
+        start_period: 30s
+
+networks:
+  proxy:
+  default:
+
+volumes:
+  wordpress_data:
+  dbdata:
