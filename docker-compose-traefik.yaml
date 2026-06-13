@@ -1,0 +1,44 @@
+services:
+  traefik:
+    image: traefik:3.7.0
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8883:8883"
+      - "8082:8082"
+    command:
+      --api.insecure=false 
+      --api.dashboard=false
+      --providers.docker=true
+      
+      --entrypoints.web.address=:80
+      --entrypoints.websecure.address=:443
+      
+      --certificatesresolvers.myresolver.acme.tlschallenge=false
+      --certificatesresolvers.myresolver.acme.httpchallenge=true
+      --certificatesresolvers.myresolver.acme.httpchallenge.entrypoint=web
+      --certificatesresolvers.myresolver.acme.email=Marc.Golder@hs-heilbronn.de
+      --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
+
+      --entrypoints.web.http.redirections.entrypoint.to=websecure
+      --entrypoints.web.http.redirections.entrypoint.scheme=https
+    
+      --log.level=INFO
+      --ping=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./letsencrypt:/letsencrypt
+    networks:
+      - frontend
+    labels:
+      - "traefik.enable=true"
+    healthcheck:
+      test: [ "CMD", "traefik", "healthcheck", "--ping" ]
+      interval: 1m
+      timeout: 10s
+      retries: 5
+
+networks:
+  frontend:
+

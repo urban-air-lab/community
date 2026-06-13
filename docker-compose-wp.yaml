@@ -5,6 +5,7 @@ services:
     container_name: wordpress
     ports:
       - "80:80"
+      - "443:443"
     depends_on:
       wordpress-db:
         condition: service_healthy
@@ -16,15 +17,21 @@ services:
     volumes:
       - wordpress_data:/var/www/html
     networks:
-      - proxy
-      - default
+      - frontend
+      - wordpress
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=community_frontend"
+
+      - "traefik.http.routers.wordpress-secure.rule=Host(`${TRAEFIK_DOMAIN}`)"
+      - "traefik.http.routers.wordpress-secure.entrypoints=websecure"
+      - "traefik.http.routers.wordpress-secure.tls=true"
+      - "traefik.http.routers.wordpress-secure.tls.certresolver=myresolver"
 
   wordpress-db:
     image: mysql:8.0
     restart: always
     container_name: wordpress-db
-    ports:
-        - "3306:3306"
     command: --log-bin-trust-function-creators=1
     environment:
         - MYSQL_DATABASE=${MYSQL_DATABASE}
@@ -34,7 +41,7 @@ services:
     volumes:
         - dbdata:/var/lib/mysql
     networks:
-      - default
+      - wordpress
     healthcheck:
         test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
         interval: 10s
@@ -43,8 +50,7 @@ services:
         start_period: 30s
 
 networks:
-  proxy:
-  default:
+  wordpress:
 
 volumes:
   wordpress_data:
