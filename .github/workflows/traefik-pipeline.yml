@@ -16,8 +16,8 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_KNOWN_HOSTS_COMMUNITY }}" >> ~/.ssh/known_hosts
-          echo "${{ secrets.SSH_PRIVATE_KEY_COMMUNITY }}" >> ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY_COMMUNITY }}" >> ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
           
           docker -H ssh://root@urbanairlab.hn compose -f docker-compose-traefik.yaml rm -f -s -v
           docker -H ssh://root@urbanairlab.hn compose -f docker-compose-traefik.yaml up -d --pull always
