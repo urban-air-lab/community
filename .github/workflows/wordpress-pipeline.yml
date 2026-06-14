@@ -31,6 +31,7 @@ jobs:
           DOCKER_BUILDKIT: 0
           COMPOSE_DOCKER_CLI_BUILD: 0
         run: |
+          docker -H ssh://root@142.132.170.152 info
           docker -H ssh://root@142.132.170.152 compose -f docker-compose-wp.yaml rm -f -s -v
           docker -H ssh://root@142.132.170.152 compose -f docker-compose-wp.yaml up -d --pull always
 
