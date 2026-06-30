@@ -1,0 +1,41 @@
+name: "Community Server - Deploy Bookstack"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-ml-services:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" >> ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+
+      - name: Deploy Bookstack and Databases
+        env:
+          TRAEFIK_DOMAIN: urbanairlab.hn
+
+          MYSQL_DATABASE: "${{ secrets.MYSQL_DATABASE }}"
+          MYSQL_USER: "${{ secrets.MYSQL_USER }}"
+          MYSQL_PASSWORD: "${{ secrets.MYSQL_PASSWORD }}"
+          MYSQL_ROOT_PASSWORD: "${{ secrets.MYSQL_ROOT_PASSWORD }}"
+
+          BOOKSTACK_APP_KEY: "${{ secrets.BOOKSTACK_APP_KEY }}"
+
+          DOCKER_BUILDKIT: 0
+          COMPOSE_DOCKER_CLI_BUILD: 0
+        run: |
+          docker -H ssh://root@142.132.170.152 compose -f docker-compose-bookstack.yaml rm -f -s -v
+          docker -H ssh://root@142.132.170.152 compose -f docker-compose-bookstack.yaml up -d --pull always
+
+
+          
+          
