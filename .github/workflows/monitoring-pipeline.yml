@@ -1,4 +1,4 @@
-name: "Deploy Community Monitoring Services"
+name: "Community Server - Deploy Monitoring Services"
 
 on:
   workflow_dispatch:
