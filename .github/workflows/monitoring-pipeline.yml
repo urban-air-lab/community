@@ -1,0 +1,34 @@
+name: "Deploy Community Monitoring Services"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-monitoring-services:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+
+      - name: Set up SSH
+        run: | 
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KNOWN_HOSTS }}" >> ~/.ssh/known_hosts
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" >> ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Node-Exporter, Cadvisor
+        env:
+          DOCKER_BUILDKIT: 0
+          COMPOSE_DOCKER_CLI_BUILD: 0
+        run: |
+          docker -H ssh://root@142.132.170.152 -p ual_infrastructure_deployments  -f docker-compose-monitoring.yaml rm -f -s -v
+          docker -H ssh://root@142.132.170.152 -p ual_infrastructure_deployments  -f docker-compose-monitoring.yaml up -d --pull always --build
+          
+
+      - name: Delete Credentials
+        run: |
+            ssh root@91.99.65.22 "rm -rf /opt/ual/configs"
+          
