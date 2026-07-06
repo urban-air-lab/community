@@ -26,6 +26,7 @@ services:
     image: gcr.io/cadvisor/cadvisor:v0.52.1
     container_name: cadvisor
     restart: always
+    privileged: true
     ports:
       - "8080:8080"
     networks:
@@ -33,14 +34,15 @@ services:
     volumes:
       - /:/rootfs:ro
       - /run:/run:ro
+      - /var/run:/var/run:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
     devices:
-      - /dev/kmsg
-    privileged: true
+      - /dev/kmsg:/dev/kmsg
     healthcheck:
-      test: [ "CMD", "wget", "--spider", "http://localhost:8080/containers/" ]
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/containers/"]
       interval: 1m
       timeout: 10s
       retries: 5
