@@ -33,7 +33,7 @@ services:
       - "traefik.http.routers.bookstack-secure.middlewares=ratelimit"
 
   bookstack-db:
-    image: mysql:8.4.11
+    image: mysql:9.7.2
     container_name: bookstack-db
     restart: unless-stopped
     environment:

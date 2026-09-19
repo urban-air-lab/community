@@ -27,7 +27,7 @@ services:
       - "traefik.http.routers.wordpress-secure.middlewares=ratelimit"
 
   wordpress-db:
-    image: mysql:8.4.11
+    image: mysql:9.7.2
     restart: always
     container_name: wordpress-db
     command: --log-bin-trust-function-creators=1
