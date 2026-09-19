@@ -33,6 +33,9 @@ services:
       - frontend
     labels:
       - "traefik.enable=true"
+      - "traefik.http.middlewares.ratelimit.ratelimit.average=100"
+      - "traefik.http.middlewares.ratelimit.ratelimit.period=1s"
+      - "traefik.http.middlewares.ratelimit.ratelimit.burst=200"
     healthcheck:
       test: [ "CMD", "traefik", "healthcheck", "--ping" ]
       interval: 1m
