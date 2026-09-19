@@ -30,7 +30,7 @@ services:
       - "traefik.http.routers.bookstack-secure.entrypoints=websecure"
       - "traefik.http.routers.bookstack-secure.tls=true"
       - "traefik.http.routers.bookstack-secure.tls.certresolver=myresolver"
-      - "traefik.http.routers.bookstack-secure.middlewares=ratelimit"
+      #- "traefik.http.routers.bookstack-secure.middlewares=ratelimit"
 
   bookstack-db:
     image: mysql:8.4.11
