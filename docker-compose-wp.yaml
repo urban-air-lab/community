@@ -24,7 +24,7 @@ services:
       - "traefik.http.routers.wordpress-secure.entrypoints=websecure"
       - "traefik.http.routers.wordpress-secure.tls=true"
       - "traefik.http.routers.wordpress-secure.tls.certresolver=myresolver"
-      #- "traefik.http.routers.wordpress-secure.middlewares=ratelimit"
+      - "traefik.http.routers.wordpress-secure.middlewares=ratelimit"
 
   wordpress-db:
     image: mysql:8.4.11
