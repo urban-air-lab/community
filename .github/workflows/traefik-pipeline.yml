@@ -21,5 +21,9 @@ jobs:
           
           docker -H ssh://deploy@142.132.170.152 compose -f docker-compose-traefik.yaml rm -f -s -v
           docker -H ssh://deploy@142.132.170.152 compose -f docker-compose-traefik.yaml up -d --pull always
+
+      - name: Clean Up
+        run: |
+            docker -H ssh://deploy@142.132.170.152 system prune --all --force 
           
           
