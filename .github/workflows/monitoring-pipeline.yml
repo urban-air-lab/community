@@ -24,7 +24,7 @@ jobs:
           DOCKER_BUILDKIT: 0
           COMPOSE_DOCKER_CLI_BUILD: 0
         run: |
-          docker -H ssh://tobias.weiland@142.132.170.152 compose -p ual_infrastructure_deployments  -f docker-compose-monitoring.yaml rm -f -s -v
-          docker -H ssh://tobias.weiland@142.132.170.152 compose -p ual_infrastructure_deployments  -f docker-compose-monitoring.yaml up -d --pull always --build
+          docker -H ssh://root@142.132.170.152 compose -p ual_infrastructure_deployments  -f docker-compose-monitoring.yaml rm -f -s -v
+          docker -H ssh://root@142.132.170.152 compose -p ual_infrastructure_deployments  -f docker-compose-monitoring.yaml up -d --pull always --build
       
           
